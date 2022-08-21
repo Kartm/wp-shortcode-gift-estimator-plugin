@@ -18,37 +18,24 @@
  * Domain Path: /languages
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- *
- * You should have received a copy of the GNU General Public License
- * along with Hot Recipes. If not, see <https://www.gnu.org/licenses/gpl-2.0.html/>.
  */
-
-function add_query_vars_filter($vars)
-{
-    $vars[] = "firstname";
-    return $vars;
-}
-add_filter('query_vars', 'add_query_vars_filter');
 
 function form_creation()
 {
-?>
-    <form method='POST'>
-        First name: <input type='text' name='firstname'><br>
-        Last name: <input type='text' name='lastname'><br>
-        Message: <textarea name='message'> Enter text here…</textarea>
-    </form>
-<?php
-}
+    $firstname = $_GET['firstname'] ?? 'nulllll';
 
-if (get_query_var('firstname')) {
+    $html = <<<HTML
+      <div class="card">
+        <form method='GET'>
+            First name: <input type='text' name='firstname'><br>
+            Last name: <input type='text' name='lastname'><br>
+            Message: <textarea name='message'> Enter text here…</textarea>
+            <button type='submit' value='Submit' />
+        </form>
+      </div>
+HTML;
 
-    // If so echo the value
-    echo get_query_var('firstname');
+    return $html;
 }
 
 add_shortcode('test', 'form_creation');
-
-
-
-?>
