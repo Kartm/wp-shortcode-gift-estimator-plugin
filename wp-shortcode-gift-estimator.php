@@ -20,22 +20,141 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
+function get_form()
+{
+  return <<<HTML
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form fieldset {
+            display: block;
+            margin: 0;
+            margin-bottom: 8px;
+        }
+
+        form button[type='submit'] {
+            align-self: flex-end;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field-grid input {
+            max-width: 100px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById("contribution_known").addEventListener('change', function(){
+                document.getElementById("contribution_value").required = this.checked ;
+            })
+
+            document.getElementById("target_known").addEventListener('change', function(){
+                document.getElementById("target_value").required = this.checked ;
+            })
+        })
+    </script>
+
+    <form method="GET">
+        <fieldset>
+        <legend>Składka na:</legend>
+        <div>
+            <input
+            type="radio"
+            id="boy_day"
+            value="boy_day"
+            name="holiday"
+            checked
+            />
+            <label for="boy_day">Dzień Chłopaka</label>
+        </div>
+
+        <div>
+            <input type="radio" id="girl_day" value="girl_day" name="holiday" />
+            <label for="girl_day">Dzień Kobiet</label>
+        </div>
+        </fieldset>
+
+        <fieldset class="">
+            <legend>Liczba osób w klasie</legend>
+            <div class="field-grid">
+                <label for="boy_count">Chłopcy: </label>
+                <input type="number" id="boy_count" name="boy_count" min="0" required />
+                <label for="girl_count">Dziewczyny: </label>
+                <input type="number" id="girl_count" name="girl_count" min="0" required />
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Wybierz jedną z dwóch opcji</legend>
+            <div class="field-grid">
+                <div>
+                    <input
+                    type="radio"
+                    id="contribution_known"
+                    value="contribution_known"
+                    name="criteria"
+                    checked
+                    />
+                    <label for="contribution_known">Wiemy po ile możemy się składać: </label>
+                </div>
+                <input type="number" name="contribution_value" id='contribution_value' min="0" />
+
+                <div>
+                    <input
+                    type="radio"
+                    id="target_known"
+                    value="target_known"
+                    name="criteria"
+                    />
+                    <label for="target_known">Wiemy o jakiej wartości prezent chcemy dać: </label>
+                </div>
+                <input type="number" name="target_value" id='target_value' min="0" />
+            </div>
+        </fieldset>
+        <button type="submit">Policz</button>
+    </form>
+HTML;
+}
+
+function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value)
+{
+  $contributors = $holiday === 'boy_day' ? $boy_count : $girl_count;
+
+  $text = $criteria === 'contribution_known' ? 'stac was na prezent o wartosci ' . $contribution_value * $contributors : 'musicie sie zlozyc po ' . $target_value / $contributors;
+
+  return <<<HTML
+        <div>
+            <fieldset>
+            <legend>Wyniki</legend>
+            <div>
+                $text
+            </div>
+            </fieldset>
+        </div>
+HTML;
+}
+
 function form_creation()
 {
-    $firstname = $_GET['firstname'] ?? 'nulllll';
+  $holiday = $_GET['holiday'] ?? '';
+  $boy_count = $_GET['boy_count'] ?? '';
+  $girl_count = $_GET['girl_count'] ?? '';
+  $criteria = $_GET['criteria'] ?? '';
+  $contribution_value = $_GET['contribution_value'] ?? '';
+  $target_value = $_GET['target_value'] ?? '';
 
-    $html = <<<HTML
-      <div class="card">
-        <form method='GET'>
-            First name: <input type='text' name='firstname'><br>
-            Last name: <input type='text' name='lastname'><br>
-            Message: <textarea name='message'> Enter text here…</textarea>
-            <button type='submit' value='Submit' />
-        </form>
-      </div>
-HTML;
+  $show_result = !empty($holiday) && !empty($boy_count) && !empty($girl_count) && !empty($criteria)
+    && (!empty($contribution_value) || !empty($target_value));
 
-    return $html;
+  return $show_result ? get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value) : get_form();
 }
 
 add_shortcode('test', 'form_creation');
