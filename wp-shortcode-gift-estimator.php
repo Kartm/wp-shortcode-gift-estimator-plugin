@@ -135,19 +135,18 @@ function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_
 {
     $text = '';
     $contributors = $holiday === 'boy_day' ? $girl_count : $boy_count;
+    $target_people = $holiday === 'girl_day' ? $girl_count : $boy_count;
 
     if ($criteria === 'contribution_known') {
         $text = sprintf(
-            'Przy składce %s, %s stać na prezent o łącznej wartości %s.',
+            'Przy składce %s %s otrzyma prezent o wartości %s.',
             formatted_money($contribution_value),
-            $holiday === 'girl_day' ? 'chłopaków' : 'dziewczyny',
-            formatted_money($contribution_value * $contributors)
+            $holiday === 'girl_day' ? 'każda dziewczyna' : 'każdy chłopak',
+            formatted_money(($contribution_value * $contributors) / $target_people)
         );
     } else if ($criteria === 'target_known') {
-        $target_people = $holiday === 'girl_day' ? $girl_count : $boy_count;
-
         $text = sprintf(
-            '%s muszą złożyć się po %s, żeby kupić %s prezent o wartości %s.',
+            '%s muszą złożyć się po %s, aby kupić %s prezent o wartości %s.',
             $holiday === 'girl_day' ? 'Chłopaki' : 'Dziewczyny',
             formatted_money(($target_value * $target_people) / $contributors),
             $holiday === 'girl_day' ? 'każdej dziewczynie' : 'każdemu chłopakowi',
