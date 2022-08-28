@@ -176,7 +176,7 @@ function form_creation()
     $contribution_value = filter_input(INPUT_GET, 'contribution_value', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
     $target_value = filter_input(INPUT_GET, 'target_value', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-    $show_result = !is_null($holiday) && !is_null($boy_count) && !is_null($girl_count) && !is_null($criteria)
+    $show_result = !is_null($holiday) && !empty($holiday) && !is_null($boy_count) && !is_null($girl_count) && !is_null($criteria) && !empty($criteria)
         && (!is_null($contribution_value) || !is_null($target_value));
 
     return $show_result ? get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value) : get_form();
