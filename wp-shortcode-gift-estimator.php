@@ -22,7 +22,7 @@
 
 function get_form()
 {
-  return <<<HTML
+    return <<<HTML
     <style>
         form {
             display: flex;
@@ -124,13 +124,25 @@ function get_form()
 HTML;
 }
 
+function formatted_money($value)
+{
+    return round($value, 2) . " zł";
+}
+
 function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value)
 {
-  $contributors = $holiday === 'boy_day' ? $boy_count : $girl_count;
+    $contributors = $holiday === 'boy_day' ? $boy_count : $girl_count;
 
-  $text = $criteria === 'contribution_known' ? 'stac was na prezent o wartosci ' . $contribution_value * $contributors : 'musicie sie zlozyc po ' . $target_value / $contributors;
+    $contribution_contributors_text = $holiday === 'girl_day' ? 'Chłopaków' : "Dziewczyny";
+    $contribution_known_text = $contribution_contributors_text . ' stać na prezent o wartości ' . formatted_money($contribution_value * $contributors) . ".";
 
-  return <<<HTML
+    $target_people = $holiday === 'girl_day' ? $boy_count : $girl_count;
+    $target_contributors_text = $holiday === 'girl_day' ? 'Chłopaki muszą' : "Dziewczyny muszą";
+    $target_known_text = $target_contributors_text . ' się złożyć po ' . formatted_money(($target_value * $target_people) / $contributors) . ".";
+
+    $text = $criteria === 'contribution_known' ? $contribution_known_text : $target_known_text;
+
+    return <<<HTML
         <div>
             <fieldset>
             <legend>Wyniki</legend>
@@ -144,17 +156,17 @@ HTML;
 
 function form_creation()
 {
-  $holiday = $_GET['holiday'] ?? '';
-  $boy_count = $_GET['boy_count'] ?? '';
-  $girl_count = $_GET['girl_count'] ?? '';
-  $criteria = $_GET['criteria'] ?? '';
-  $contribution_value = $_GET['contribution_value'] ?? '';
-  $target_value = $_GET['target_value'] ?? '';
+    $holiday = $_GET['holiday'] ?? '';
+    $boy_count = $_GET['boy_count'] ?? '';
+    $girl_count = $_GET['girl_count'] ?? '';
+    $criteria = $_GET['criteria'] ?? '';
+    $contribution_value = $_GET['contribution_value'] ?? '';
+    $target_value = $_GET['target_value'] ?? '';
 
-  $show_result = !empty($holiday) && !empty($boy_count) && !empty($girl_count) && !empty($criteria)
-    && (!empty($contribution_value) || !empty($target_value));
+    $show_result = !empty($holiday) && !empty($boy_count) && !empty($girl_count) && !empty($criteria)
+        && (!empty($contribution_value) || !empty($target_value));
 
-  return $show_result ? get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value) : get_form();
+    return $show_result ? get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value) : get_form();
 }
 
 add_shortcode('test', 'form_creation');
