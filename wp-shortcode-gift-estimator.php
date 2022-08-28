@@ -144,12 +144,12 @@ function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_
             formatted_money($contribution_value * $contributors)
         );
     } else if ($criteria === 'target_known') {
-        $target_people = $holiday === 'girl_day' ? $boy_count : $girl_count;
+        $target_people = $holiday === 'girl_day' ? $girl_count : $boy_count;
 
         $text = sprintf(
             '%s muszą złożyć się po %s, żeby kupić %s prezent o wartości %s.',
             $holiday === 'girl_day' ? 'Chłopaki' : 'Dziewczyny',
-            formatted_money(($target_value * $target_people) / $contributors), // po 24
+            formatted_money(($target_value * $target_people) / $contributors),
             $holiday === 'girl_day' ? 'każdej dziewczynie' : 'każdemu chłopakowi',
             formatted_money($target_value),
         );
