@@ -138,7 +138,7 @@ function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_
 
     if ($criteria === 'contribution_known') {
         $text = sprintf(
-            'Przy składce %s, %s stać na prezent o wartości %s.',
+            'Przy składce %s, %s stać na prezent o łącznej wartości %s.',
             formatted_money($contribution_value),
             $holiday === 'girl_day' ? 'chłopaków' : 'dziewczyny',
             formatted_money($contribution_value * $contributors)
