@@ -119,7 +119,7 @@ function get_form()
                 <input type="number" name="target_value" id='target_value' min="0" />
             </div>
         </fieldset>
-        <button type="submit">Policz</button>
+        <button type="submit">Oblicz</button>
     </form>
 HTML;
 }
