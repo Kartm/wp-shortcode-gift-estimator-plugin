@@ -134,15 +134,25 @@ function formatted_money($value)
 function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value)
 {
     $text = '';
-    $contributors = $holiday === 'boy_day' ? $boy_count : $girl_count;
+    $contributors = $holiday === 'boy_day' ? $girl_count : $boy_count;
 
     if ($criteria === 'contribution_known') {
-        $text = $text . $holiday === 'girl_day' ? 'Chłopaków' : "Dziewczyny";
-        $text = $text . ' stać na prezent o wartości ' . formatted_money($contribution_value * $contributors) . ".";
+        $text = sprintf(
+            'Przy składce %s, %s stać na prezent o wartości %s.',
+            formatted_money($contribution_value),
+            $holiday === 'girl_day' ? 'chłopaków' : 'dziewczyny',
+            formatted_money($contribution_value * $contributors)
+        );
     } else if ($criteria === 'target_known') {
         $target_people = $holiday === 'girl_day' ? $boy_count : $girl_count;
-        $text = $text . $holiday === 'girl_day' ? 'Chłopaki muszą' : "Dziewczyny muszą";
-        $text = $text . ' się złożyć po ' . formatted_money(($target_value * $target_people) / $contributors) . ".";
+
+        $text = sprintf(
+            '%s muszą złożyć się po %s, żeby kupić %s prezent o wartości %s.',
+            $holiday === 'girl_day' ? 'Chłopaki' : 'Dziewczyny',
+            formatted_money(($target_value * $target_people) / $contributors), // po 24
+            $holiday === 'girl_day' ? 'każdej dziewczynie' : 'każdemu chłopakowi',
+            formatted_money($target_value),
+        );
     }
 
     return <<<HTML
@@ -159,15 +169,15 @@ HTML;
 
 function form_creation()
 {
-    $holiday = $_GET['holiday'] ?? '';
-    $boy_count = $_GET['boy_count'] ?? '';
-    $girl_count = $_GET['girl_count'] ?? '';
-    $criteria = $_GET['criteria'] ?? '';
-    $contribution_value = $_GET['contribution_value'] ?? '';
-    $target_value = $_GET['target_value'] ?? '';
+    $holiday = filter_input(INPUT_GET, 'holiday', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+    $boy_count = filter_input(INPUT_GET, 'boy_count', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $girl_count = filter_input(INPUT_GET, 'girl_count', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $criteria = filter_input(INPUT_GET, 'criteria', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_NULL_ON_FAILURE);
+    $contribution_value = filter_input(INPUT_GET, 'contribution_value', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
+    $target_value = filter_input(INPUT_GET, 'target_value', FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-    $show_result = !empty($holiday) && !empty($boy_count) && !empty($girl_count) && !empty($criteria)
-        && (!empty($contribution_value) || !empty($target_value));
+    $show_result = !is_null($holiday) && !is_null($boy_count) && !is_null($girl_count) && !is_null($criteria)
+        && (!is_null($contribution_value) || !is_null($target_value));
 
     return $show_result ? get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value) : get_form();
 }
