@@ -52,12 +52,12 @@ function get_form()
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-            document.getElementById("contribution_known").addEventListener('change', function(){
-                document.getElementById("contribution_value").required = this.checked ;
+            document.getElementById("contribution_known").addEventListener('change', (e) => {
+                document.getElementById("contribution_value").required = e.target.checked ;
             })
 
-            document.getElementById("target_known").addEventListener('change', function(){
-                document.getElementById("target_value").required = this.checked ;
+            document.getElementById("target_known").addEventListener('change', (e) => {
+                document.getElementById("target_value").required = e.target.checked ;
             })
         })
     </script>
@@ -105,7 +105,7 @@ function get_form()
                     />
                     <label for="contribution_known">Wiemy po ile możemy się składać: </label>
                 </div>
-                <input type="number" name="contribution_value" id='contribution_value' min="0" />
+                <input type="number" name="contribution_value" id='contribution_value' min="0" required/>
 
                 <div>
                     <input
