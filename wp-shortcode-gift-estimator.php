@@ -181,4 +181,4 @@ function form_creation()
     return $show_result ? get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value) : get_form();
 }
 
-add_shortcode('test', 'form_creation');
+add_shortcode('gift-estimator', 'form_creation');
