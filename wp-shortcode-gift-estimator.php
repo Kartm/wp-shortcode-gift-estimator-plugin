@@ -137,12 +137,12 @@ function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_
     $contributors = $holiday === 'boy_day' ? $boy_count : $girl_count;
 
     if ($criteria === 'contribution_known') {
-        $contribution_contributors_text = $holiday === 'girl_day' ? 'Chłopaków' : "Dziewczyny";
-        $text = $contribution_contributors_text . ' stać na prezent o wartości ' . formatted_money($contribution_value * $contributors) . ".";
+        $text = $text . $holiday === 'girl_day' ? 'Chłopaków' : "Dziewczyny";
+        $text = $text . ' stać na prezent o wartości ' . formatted_money($contribution_value * $contributors) . ".";
     } else if ($criteria === 'target_known') {
         $target_people = $holiday === 'girl_day' ? $boy_count : $girl_count;
-        $target_contributors_text = $holiday === 'girl_day' ? 'Chłopaki muszą' : "Dziewczyny muszą";
-        $text = $target_contributors_text . ' się złożyć po ' . formatted_money(($target_value * $target_people) / $contributors) . ".";
+        $text = $text . $holiday === 'girl_day' ? 'Chłopaki muszą' : "Dziewczyny muszą";
+        $text = $text . ' się złożyć po ' . formatted_money(($target_value * $target_people) / $contributors) . ".";
     }
 
     return <<<HTML
