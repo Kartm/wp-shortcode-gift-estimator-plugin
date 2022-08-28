@@ -126,21 +126,24 @@ HTML;
 
 function formatted_money($value)
 {
-    return round($value, 2) . " zł";
+    $text = round($value, 2) . " zł";
+
+    return sprintf('<h6 style=\'display: inline; margin: 0;\'>%s</h6>', htmlspecialchars($text));
 }
 
 function get_result($holiday, $boy_count, $girl_count, $criteria, $contribution_value, $target_value)
 {
+    $text = '';
     $contributors = $holiday === 'boy_day' ? $boy_count : $girl_count;
 
-    $contribution_contributors_text = $holiday === 'girl_day' ? 'Chłopaków' : "Dziewczyny";
-    $contribution_known_text = $contribution_contributors_text . ' stać na prezent o wartości ' . formatted_money($contribution_value * $contributors) . ".";
-
-    $target_people = $holiday === 'girl_day' ? $boy_count : $girl_count;
-    $target_contributors_text = $holiday === 'girl_day' ? 'Chłopaki muszą' : "Dziewczyny muszą";
-    $target_known_text = $target_contributors_text . ' się złożyć po ' . formatted_money(($target_value * $target_people) / $contributors) . ".";
-
-    $text = $criteria === 'contribution_known' ? $contribution_known_text : $target_known_text;
+    if ($criteria === 'contribution_known') {
+        $contribution_contributors_text = $holiday === 'girl_day' ? 'Chłopaków' : "Dziewczyny";
+        $text = $contribution_contributors_text . ' stać na prezent o wartości ' . formatted_money($contribution_value * $contributors) . ".";
+    } else if ($criteria === 'target_known') {
+        $target_people = $holiday === 'girl_day' ? $boy_count : $girl_count;
+        $target_contributors_text = $holiday === 'girl_day' ? 'Chłopaki muszą' : "Dziewczyny muszą";
+        $text = $target_contributors_text . ' się złożyć po ' . formatted_money(($target_value * $target_people) / $contributors) . ".";
+    }
 
     return <<<HTML
         <div>
